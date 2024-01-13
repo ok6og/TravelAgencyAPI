@@ -10,15 +10,7 @@ namespace TravelAgencyAPI.Services
 
         public IEnumerable<ResponseReservationDTO> GetReservations() => _reservations.Select(MapToResponseReservationDTO);
 
-        public ResponseReservationDTO GetReservation(int reservationId)
-        {
-            var reservation = _reservations.FirstOrDefault(x => x.Id == reservationId);
-            if (reservation == null)
-            {
-                return null;
-            }
-            return MapToResponseReservationDTO(reservation);
-        }
+        public ResponseReservationDTO GetReservation(int reservationId) => MapToResponseReservationDTO(_reservations.FirstOrDefault(x => x.Id == reservationId));
 
         public ResponseReservationDTO AddReservation(CreateReservationDTO reservationDTO)
         {
@@ -61,6 +53,11 @@ namespace TravelAgencyAPI.Services
         }
         private ResponseReservationDTO MapToResponseReservationDTO(Reservation reservation)
         {
+            if (reservation == null)
+            {
+                return null;
+            }
+
             return new ResponseReservationDTO
             {
                 PhoneNumber = reservation.PhoneNumber,

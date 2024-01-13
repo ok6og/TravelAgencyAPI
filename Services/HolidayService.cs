@@ -10,15 +10,8 @@ namespace TravelAgencyAPI.Services
 
         public IEnumerable<ResponseHolidayDTO> GetHolidays() => _holidays.Select(MapToResponseHolidayDTO);
 
-        public ResponseHolidayDTO GetHoliday(int holidayId)
-        {
-            var holiday = _holidays.FirstOrDefault(x => x.Id == holidayId);
-            if (holiday == null)
-            {
-                return null;
-            }
-            return MapToResponseHolidayDTO(holiday);
-        }
+        public ResponseHolidayDTO GetHoliday(int holidayId) => MapToResponseHolidayDTO(_holidays.FirstOrDefault(x => x.Id == holidayId));      
+        
         public ResponseHolidayDTO AddHoliday(CreateHolidayDTO holidayDTO)
         { 
             Holiday holiday = new Holiday();
@@ -70,6 +63,11 @@ namespace TravelAgencyAPI.Services
 
         private ResponseHolidayDTO MapToResponseHolidayDTO(Holiday holiday)
         {
+            if (holiday == null)
+            {
+                return null;
+            }
+
             return new ResponseHolidayDTO
             {
                 Duration = holiday.Duration,
