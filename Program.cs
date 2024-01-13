@@ -1,3 +1,5 @@
+using TravelAgencyAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<HolidayService>();
+builder.Services.AddScoped<LocationsService>();
+builder.Services.AddScoped<ReservationsService>();
 
 var app = builder.Build();
 

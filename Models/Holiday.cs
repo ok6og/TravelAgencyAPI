@@ -1,8 +1,6 @@
-﻿using TravelAgencyAPI.Models;
-
-namespace TravelAgencyAPI.DTO
+﻿namespace TravelAgencyAPI.Models
 {
-    public class ResponseHolidayDTO
+    public class Holiday
     {
         public int Duration { get; set; }
         public int FreeSlots { get; set; }

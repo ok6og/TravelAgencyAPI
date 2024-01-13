@@ -1,6 +1,6 @@
-﻿namespace TravelAgencyAPI.DTO
+﻿namespace TravelAgencyAPI.Models
 {
-    public class LocationDTO
+    public class Location
     {
         public string Number { get; set; }
         public string Country { get; set; }
