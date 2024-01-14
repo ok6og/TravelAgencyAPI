@@ -6,7 +6,7 @@ using TravelAgencyAPI.Services;
 namespace TravelAgencyAPI.Controllers
 {
     [ApiController]
-    [Route("api/holidays")]
+    [Route("travel-agency/holidays")]
     public class HolidayController : ControllerBase
     {
         private readonly HolidayService _holidayService;
@@ -20,17 +20,17 @@ namespace TravelAgencyAPI.Controllers
         [HttpPost]
         public IActionResult CreateHoliday([FromBody] CreateHolidayDTO holiday)
         {
-            if (_locationsService.GetLocation(holiday.Location.Id) == null)
+            if (_locationsService.GetLocation(holiday.Location) == null)
             {
                 return BadRequest("Invalid location ID");
             }
 
-            var result = _holidayService.AddHoliday(holiday);
+            ResponseHolidayDTO result = _holidayService.AddHoliday(holiday);
             return Ok(result);
         }
 
         [HttpGet]
-        public IActionResult GetHolidays()
+        public IActionResult GetHolidays(string? location, DateTime? startDate, int? duration)
         {
             var holidays = _holidayService.GetHolidays();            
             return Ok(holidays);
@@ -39,7 +39,7 @@ namespace TravelAgencyAPI.Controllers
         [HttpGet("{holidayId}")]
         public IActionResult GetHoliday(int holidayId)
         {
-            var holidays = _holidayService.GetHoliday(holidayId);
+            ResponseHolidayDTO holidays = _holidayService.GetHoliday(holidayId);
 
             if (holidays != null)
             {
@@ -51,7 +51,7 @@ namespace TravelAgencyAPI.Controllers
         [HttpDelete("{holidayId}")]
         public IActionResult DeleteHoliday(int holidayId)
         {
-            var success = _holidayService.DeleteHoliday(holidayId);
+            bool success = _holidayService.DeleteHoliday(holidayId);
 
             if (success)
             {
@@ -64,7 +64,7 @@ namespace TravelAgencyAPI.Controllers
         [HttpPut]
         public IActionResult UpdateHoliday([FromBody] UpdateHolidayDTO updateHolidayDTO)
         {
-            var updatedHoliday = _holidayService.UpdateHoliday(updateHolidayDTO);
+            ResponseHolidayDTO updatedHoliday = _holidayService.UpdateHoliday(updateHolidayDTO);
 
             if (updatedHoliday != null)
             {

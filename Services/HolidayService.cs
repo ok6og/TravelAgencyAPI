@@ -7,6 +7,12 @@ namespace TravelAgencyAPI.Services
     {
         private static int lastHolidayId = 0;
         private static readonly List<Holiday> _holidays = new List<Holiday>();
+        private readonly LocationsService _locationService;
+
+        public HolidayService(LocationsService locationService)
+        {
+            _locationService = locationService;
+        }
 
         public IEnumerable<ResponseHolidayDTO> GetHolidays() => _holidays.Select(MapToResponseHolidayDTO);
 
@@ -19,7 +25,7 @@ namespace TravelAgencyAPI.Services
             holiday.Duration = holidayDTO.Duration;
             holiday.FreeSlots = holidayDTO.FreeSlots;
             holiday.Price = holidayDTO.Price;
-            holiday.Location = holidayDTO.Location;
+            holiday.Location = _locationService.MapToLocation(_locationService.GetLocation(holidayDTO.Location));
             holiday.Title = holidayDTO.Title;
             holiday.StartDate = holidayDTO.StartDate;
             holiday.Id = ++lastHolidayId;

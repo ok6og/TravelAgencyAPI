@@ -74,5 +74,23 @@ namespace TravelAgencyAPI.Services
                 ImageUrl = location.ImageUrl
             };
         }
+
+        public Location MapToLocation(ResponseLocationDTO location)
+        {
+            if (location == null)
+            {
+                return null;
+            }
+
+            return new Location
+            {
+                Id = location.Id,
+                Number = location.Number,
+                Street = location.Street,
+                City = location.City,
+                Country = location.Country,
+                ImageUrl = location.ImageUrl
+            };
+        }
     }
 }

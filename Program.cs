@@ -12,7 +12,20 @@ builder.Services.AddScoped<HolidayService>();
 builder.Services.AddScoped<LocationsService>();
 builder.Services.AddScoped<ReservationsService>();
 
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
