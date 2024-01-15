@@ -7,6 +7,6 @@ namespace TravelAgencyAPI.DTO
         public int Id { get; set; }
         public string PhoneNumber { get; set; }
         public string ContactName { get; set; }
-        public Holiday Holiday { get; set; }
+        public ResponseHolidayDTO Holiday { get; set; }
     }
 }

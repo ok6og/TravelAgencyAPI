@@ -7,6 +7,5 @@
         public string City { get; set; }
         public string Street { get; set; }
         public string? ImageUrl { get; set; }
-        public int Id { get; set; }
     }
 }

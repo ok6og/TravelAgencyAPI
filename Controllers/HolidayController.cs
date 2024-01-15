@@ -20,6 +20,7 @@ namespace TravelAgencyAPI.Controllers
         [HttpPost]
         public IActionResult CreateHoliday([FromBody] CreateHolidayDTO holiday)
         {
+
             if (_locationsService.GetLocation(holiday.Location) == null)
             {
                 return BadRequest("Invalid location ID");
@@ -32,7 +33,7 @@ namespace TravelAgencyAPI.Controllers
         [HttpGet]
         public IActionResult GetHolidays(string? location, DateTime? startDate, int? duration)
         {
-            var holidays = _holidayService.GetHolidays();            
+            var holidays = _holidayService.GetHolidays(location, startDate, duration);            
             return Ok(holidays);
         }
 

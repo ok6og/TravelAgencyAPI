@@ -10,7 +10,7 @@ namespace TravelAgencyAPI.Services
 
         public IEnumerable<ResponseLocationDTO> GetLocations() => _locations.Select(MapToResponseLocationDTO);
 
-        public ResponseLocationDTO GetLocation(int locationId) => MapToResponseLocationDTO(_locations.FirstOrDefault(x => x.Id == locationId));
+        public ResponseLocationDTO GetLocation(long locationId) => MapToResponseLocationDTO(_locations.FirstOrDefault(x => x.Id == locationId));
        
         public ResponseLocationDTO AddLocation(CreateLocationDTO locationDTO)
         {
@@ -57,7 +57,7 @@ namespace TravelAgencyAPI.Services
             return null;
         }
 
-        private ResponseLocationDTO MapToResponseLocationDTO(Location location)
+        public ResponseLocationDTO MapToResponseLocationDTO(Location location)
         {
             if (location == null)
             {

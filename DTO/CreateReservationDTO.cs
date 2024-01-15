@@ -4,7 +4,6 @@
     {
         public string PhoneNumber { get; set; }
         public string ContactName { get; set; }
-        public int Id { get; set; }
-        public ResponseHolidayDTO Holiday { get; set; }
+        public long Holiday { get; set; }
     }
 }

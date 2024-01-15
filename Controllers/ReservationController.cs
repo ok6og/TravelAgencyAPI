@@ -9,21 +9,29 @@ namespace TravelAgencyAPI.Controllers
     public class ReservationController : ControllerBase
     {
         private readonly ReservationsService _reservationsService;
-        public ReservationController(ReservationsService reservationService)
+        private readonly HolidayService _holidayService;
+        public ReservationController(ReservationsService reservationService, HolidayService holidayService)
         {
             _reservationsService = reservationService;
+            _holidayService = holidayService;
         }
 
         [HttpPost]
         public IActionResult CreateReservation([FromBody] CreateReservationDTO reservation)
         {
-            ResponseReservationDTO responseReservationDTO = _reservationsService.AddReservation(reservation);
-
-            if (responseReservationDTO == null)
+            if (!reservation.PhoneNumber.All(char.IsDigit))
             {
-                return BadRequest();
+                return BadRequest("That's an invalid phone number");
             }
-            return Ok(responseReservationDTO);
+
+            if (_holidayService.ReserveHolidaySlot(reservation.Holiday))
+            {
+                ResponseReservationDTO responseReservationDTO = _reservationsService.AddReservation(reservation);
+                return Ok(responseReservationDTO);
+            }
+
+             return BadRequest("No available slots for the selected holiday.");
+            
         }
 
         [HttpDelete("{reservationId}")]

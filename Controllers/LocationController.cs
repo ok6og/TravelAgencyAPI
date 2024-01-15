@@ -18,16 +18,22 @@ namespace TravelAgencyAPI.Controllers
         [HttpPost]
         public IActionResult CreateLocation([FromBody] CreateLocationDTO locationDTO)
         {
+            if (!locationDTO.Number.All(char.IsDigit))
+            {
+                return BadRequest("That's an invalid number");
+            }
+
             ResponseLocationDTO responseLocationDTO = _locationService.AddLocation(locationDTO);
 
-            if (responseLocationDTO == null)
+            if (locationDTO == null)
             {
-                return BadRequest();
+                return BadRequest("That's not a valid loaction");
             }
+
             return Ok(responseLocationDTO);
         }
 
-        [HttpDelete]
+        [HttpDelete("{locationId}")]
         public IActionResult DeleteLocation(int locationId)
         {
             bool success = _locationService.DeleteLocation(locationId);

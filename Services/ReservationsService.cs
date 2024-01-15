@@ -7,6 +7,12 @@ namespace TravelAgencyAPI.Services
     {
         private static int lastReservationId = 0;
         private static readonly List<Reservation> _reservations = new List<Reservation>();
+        private readonly HolidayService _holidayService;
+
+        public ReservationsService(HolidayService holidayService)
+        {
+            _holidayService = holidayService;
+        }
 
         public IEnumerable<ResponseReservationDTO> GetReservations() => _reservations.Select(MapToResponseReservationDTO);
 
@@ -18,7 +24,7 @@ namespace TravelAgencyAPI.Services
 
             reservation.ContactName = reservationDTO.ContactName;
             reservation.PhoneNumber = reservationDTO.PhoneNumber;
-            reservation.Holiday = reservation.Holiday;
+            reservation.Holiday = _holidayService.MapToHoliday(_holidayService.GetHoliday(reservationDTO.Holiday));
             reservation.Id = ++lastReservationId;
 
             _reservations.Add(reservation);
@@ -44,7 +50,7 @@ namespace TravelAgencyAPI.Services
             if (existingReservation != null)
             {
                 existingReservation.PhoneNumber = updateReservationDTO.PhoneNumber;
-                existingReservation.Holiday = updateReservationDTO.Holiday;
+                existingReservation.Holiday = _holidayService.MapToHoliday(_holidayService.GetHoliday(updateReservationDTO.Holiday));
                 existingReservation.ContactName = updateReservationDTO.ContactName;
 
                 return MapToResponseReservationDTO(existingReservation);
@@ -63,7 +69,7 @@ namespace TravelAgencyAPI.Services
                 PhoneNumber = reservation.PhoneNumber,
                 ContactName = reservation.ContactName,
                 Id = reservation.Id,
-                Holiday = reservation.Holiday
+                Holiday = _holidayService.MapToResponseHolidayDTO(reservation.Holiday)
             };
         }
     }

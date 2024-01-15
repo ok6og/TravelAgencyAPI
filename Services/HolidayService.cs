@@ -14,9 +14,35 @@ namespace TravelAgencyAPI.Services
             _locationService = locationService;
         }
 
-        public IEnumerable<ResponseHolidayDTO> GetHolidays() => _holidays.Select(MapToResponseHolidayDTO);
+        public IEnumerable<ResponseHolidayDTO> GetHolidays(string? location, DateTime? startDate, int? duration)
+        {
+            //Getting all the holidays
 
-        public ResponseHolidayDTO GetHoliday(int holidayId) => MapToResponseHolidayDTO(_holidays.FirstOrDefault(x => x.Id == holidayId));      
+            var holidays = _holidays.Select(MapToResponseHolidayDTO);
+
+            //Filtering them out
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                holidays = holidays.Where(x => (x.Location.City.Contains(location, StringComparison.OrdinalIgnoreCase) ||
+                                                x.Location.Country.Contains(location, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            if (startDate.HasValue)
+            {
+                holidays = holidays.Where(h => DateTime.Compare(h.StartDate.Date, startDate.Value.Date) == 0);
+                Console.WriteLine(holidays);
+            }
+
+            if (duration.HasValue)
+            {
+                holidays = holidays.Where(h => h.Duration == duration);
+            }
+
+            return holidays;
+        }
+
+        public ResponseHolidayDTO GetHoliday(long holidayId) => MapToResponseHolidayDTO(_holidays.FirstOrDefault(x => x.Id == holidayId));      
         
         public ResponseHolidayDTO AddHoliday(CreateHolidayDTO holidayDTO)
         { 
@@ -57,7 +83,7 @@ namespace TravelAgencyAPI.Services
                 existingHoliday.Duration = updateHolidayDTO.Duration;
                 existingHoliday.FreeSlots = updateHolidayDTO.FreeSlots;
                 existingHoliday.Price = updateHolidayDTO.Price;
-                existingHoliday.Location = updateHolidayDTO.Location;
+                existingHoliday.Location = _locationService.MapToLocation(_locationService.GetLocation(updateHolidayDTO.Location));
                 existingHoliday.Title = updateHolidayDTO.Title;
                 existingHoliday.StartDate = updateHolidayDTO.StartDate;
 
@@ -67,7 +93,20 @@ namespace TravelAgencyAPI.Services
             return null;
         }
 
-        private ResponseHolidayDTO MapToResponseHolidayDTO(Holiday holiday)
+        public bool ReserveHolidaySlot(long holidayId)
+        {
+            var holiday = _holidays.FirstOrDefault(x => x.Id == holidayId);
+
+            if (holiday != null && holiday.FreeSlots > 0)
+            {
+                holiday.FreeSlots--;
+                return true;
+            }
+
+            return false;
+        }
+
+        public ResponseHolidayDTO MapToResponseHolidayDTO(Holiday holiday)
         {
             if (holiday == null)
             {
@@ -79,7 +118,26 @@ namespace TravelAgencyAPI.Services
                 Duration = holiday.Duration,
                 FreeSlots = holiday.FreeSlots,
                 Price = holiday.Price,
-                Location = holiday.Location,
+                Location = _locationService.MapToResponseLocationDTO(holiday.Location),
+                Title = holiday.Title,
+                StartDate = holiday.StartDate,
+                Id = holiday.Id
+            };
+        }
+
+        public Holiday MapToHoliday(ResponseHolidayDTO holiday)
+        {
+            if (holiday == null)
+            {
+                return null;
+            }
+
+            return new Holiday
+            {
+                Duration = holiday.Duration,
+                FreeSlots = holiday.FreeSlots,
+                Price = holiday.Price,
+                Location = _locationService.MapToLocation(holiday.Location),
                 Title = holiday.Title,
                 StartDate = holiday.StartDate,
                 Id = holiday.Id
